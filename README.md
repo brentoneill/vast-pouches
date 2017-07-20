@@ -27,13 +27,6 @@ Tests will re-run on file save (both component and test files).
 
 # Deploys
 
-This repo deploys to heroku (https://btc-lemonade.herokuapp.com/) any time there is a push to `master`. `server.js` is used in this case to serve up the static assets and `views/index.js`. 
+This repo deploys to heroku (https://vast-pouches.herokuapp.com/) any time there is a push to `master`. `server.js` is used in this case to serve up the static assets and `views/index.js`. 
 
 The deploy runs `webpack` which drops `bundle.js` inside a `dist` folder. The `dist` folder is in the `.gitignore`, so you will notice that we do not check in any build artifacts but instead build them on deployment.
-
-# Roadmap
-
-- Add more types
-- Configure CI via CircleCI
-- Fill out Stats and Settings component
-- User auth system to persist user data
