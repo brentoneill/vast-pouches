@@ -1,0 +1,22 @@
+@import './variables.scss';
+
+.TransactionFeed {
+    h2.header {
+        display: inline-block;
+        float: left;
+        margin-top: 4px !important;
+    }
+
+    .ui.feed {
+        max-height: 500px;
+        overflow-y: auto;
+        width: 100%;
+
+        >.event {
+            padding-left: $padding-md;
+            > .label {
+                width: auto;
+            }
+        }
+    }
+}

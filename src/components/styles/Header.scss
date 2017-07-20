@@ -1,0 +1,12 @@
+@import './variables';
+
+.Header {
+    padding: $padding-md;
+    height: $header-height;
+    text-align: center;
+
+    h2 {
+        text-align: center;
+        font-weight: 300;
+    }
+}

@@ -1,0 +1,19 @@
+@import './variables';
+
+.Layout__sidebar {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: $sidebar-width;
+    height: 100%;
+    background-color: $blue-dark;
+    padding: $padding-md;
+}
+
+.Layout__content {
+    max-width: 980px;
+    margin: 0 auto;
+    width: 100%;
+    height: 100%;
+    background-color: $bg-color;
+}

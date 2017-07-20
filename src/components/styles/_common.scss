@@ -1,0 +1,72 @@
+.column {
+    .ui.card {
+        margin-bottom: 2em;
+
+        &:last-child {
+            margin-bottom: 2em;
+        }
+    }
+}
+
+.ui.card {
+    min-height: 120px !important;
+    .ui.header {
+        font-weight: 300;
+        width: 100%;
+    }
+}
+
+.circle {
+    width: 35px;
+    height: 35px;
+    border-radius: 50%;
+    background-color: #2185D0;
+}
+
+.feed .event {
+    .circle { margin-top: 10px; }
+}
+
+.content.extra {
+    .ui.fluid.input {
+        input {
+            border-top-left-radius: 0;
+        }
+
+        button {
+            border-top-right-radius: 0 !important;
+        }
+    }
+}
+
+a {
+    text-transform: uppercase;
+    letter-spacing: 1.2px;
+}
+
+.block {
+    display: block;
+}
+
+.text-gray {
+    color: $gray;
+}
+
+.text-center {
+    text-align: center;
+}
+
+html,
+body {
+    background: $bg-color;
+    height: 100%;
+}
+
+#app > div,
+#app,
+.Layout,
+.App__container,
+.App {
+    background-color: $bg-color;
+    height: 100%;
+}
