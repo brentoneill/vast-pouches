@@ -36,8 +36,6 @@ class Layout extends React.Component<ILayoutProps, ILayoutState> {
             }
         ];
 
-        // <Sidebar className={'Layout__sidebar'} navigationLinks={navLinks}/>
-
         return (
             <div className="Layout">
                 <div className="Layout__content">

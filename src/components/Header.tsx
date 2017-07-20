@@ -41,8 +41,6 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = (dispatch) => {
     return {
-        // generateNewAddress: bindActionCreators(generateNewAddress, dispatch),
-        // addAddress: bindActionCreators(addAddress, dispatch)
     };
 };
 
