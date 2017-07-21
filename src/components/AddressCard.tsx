@@ -1,8 +1,10 @@
 import * as React from 'react';
 import autobind from 'autobind-decorator';
-import { Card } from 'semantic-ui-react';
+import { Card, Button } from 'semantic-ui-react';
 
 import { IAddress } from '../actions';
+
+import './styles/AddressCard';
 
 interface IProps {
     address: IAddress;
@@ -11,6 +13,17 @@ interface IProps {
 }
 
 export default class AddressCard extends React.Component<IProps, {}> {
+
+    @autobind
+    onDeleteClick(event: React.MouseEvent<HTMLElement>) {
+        this.props.onDeleteClick(this.props.address);
+    }
+
+    @autobind
+    onEditClick(event: React.MouseEvent<HTMLElement>) {
+        this.props.onDeleteClick(this.props.address);
+    }
+
     render(): JSX.Element {
         const { address } = this.props;
 
@@ -18,7 +31,14 @@ export default class AddressCard extends React.Component<IProps, {}> {
             <Card fluid className="AddressCard">
                 <Card.Content>
                     <h3>{address.attributes.title}</h3>
-                    <a href={address.attributes.url}>{address.attributes.url}</a>
+                    <a target="_blank" href={address.attributes.url}>{address.attributes.url}</a>
+                    <div className="AddressCard__controls">
+                        <Button.Group>
+                            <Button primary onClick={this.onEditClick}>Edit</Button>
+                                <Button.Or />
+                            <Button negative onClick={this.onDeleteClick}>Delete</Button>
+                        </Button.Group>
+                    </div>
                 </Card.Content>
             </Card>
         );

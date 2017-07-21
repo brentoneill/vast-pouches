@@ -85,13 +85,16 @@ class Dashboard extends React.Component<IDashboardProps, IDashboardState> {
     }
 
     @autobind
-    onEditAddressClick() {
-
+    onEditAddressClick(address: IAddress) {
+        console.log(address);
     }
 
     @autobind
-    onDeleteAddressClick() {
-
+    onDeleteAddressClick(address: IAddress) {
+        this.props.deleteAddress(address.id)
+            .then(action => {
+                this.props.fetchAddresses();
+            });
     }
 
     renderAddress(addresses: IAddress[]): JSX.Element[] | null {
