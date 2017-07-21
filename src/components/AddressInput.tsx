@@ -1,25 +1,17 @@
 import * as React from 'react';
 import autobind from 'autobind-decorator';
-import { Card, Header, Input } from 'semantic-ui-react';
+import { Card, Header, Input, Grid } from 'semantic-ui-react';
 
-import { store } from '../';
 import { addAddress } from '../actions';
 
 interface IProps {
-    addresses?: any;
     onAddAddress: Function;
 }
 
 interface IState {
-    newAddress?: string;
+    url?: string;
     loading?: boolean;
-}
-
-export interface IBitcoinAddress {
-    name?: string;
-    address: string;
-    balance?: number;
-    totalReceived?: number;
+    title?: string;
 }
 
 export default class AddressInput extends React.Component<IProps, IState> {
@@ -28,22 +20,38 @@ export default class AddressInput extends React.Component<IProps, IState> {
     constructor(props: IProps) {
         super(props);
         this.state = {
-            newAddress: ''
+            url: '',
+            title: ''
         };
     }
 
     @autobind
     handleAddAddressClick(event: React.MouseEvent<HTMLButtonElement>, data): void {
+        const { url, title } = this.state;
         this.setState({ loading: true });
-        this.props.onAddAddress(this.state.newAddress)
-            .then(res => {
-                this.setState({ newAddress: '', loading: false });
+        this.props.onAddAddress({ attributes: { title: title, url }})
+            .then(() => {
+                this.setState({ url: '', title: '', loading: false });
             });
     }
 
     @autobind
-    onAddressChange(event: React.ChangeEvent<HTMLInputElement>, data): void {
-        this.setState({ newAddress: data.value });
+    onUrlChange(event: React.ChangeEvent<HTMLInputElement>, data): void {
+        this.setState({ url: data.value });
+    }
+
+    @autobind
+    onNameChange(event: React.ChangeEvent<HTMLInputElement>, data): void {
+        this.setState({ title: data.value });
+    }
+
+    validate(): boolean {
+        const { title, url } = this.state;
+        if (title.length > 1 && url.length > 1) {
+            return false;
+        } else {
+            return true;
+        }
     }
 
     render(): JSX.Element | null {
@@ -52,11 +60,19 @@ export default class AddressInput extends React.Component<IProps, IState> {
                 <Card fluid>
                     <Card.Content>
                         <Header as={'h2'} color={'blue'}>Add Property</Header>
-                        <Input fluid
-                               value={this.state.newAddress}
-                               onChange={this.onAddressChange}
-                               action={{ loading: this.state.loading, disabled: this.state.newAddress.length < 25, color: 'blue', labelPosition: 'right', icon: 'plus', content: 'Add', onClick: this.handleAddAddressClick }}
-                               placeholder="Some url"/>
+                        <Grid.Row columns={12}>
+                            <Grid.Column mobile={12} width={6}>
+                                <Input value={this.state.title}
+                                       onChange={this.onNameChange}
+                                       placeholder="123 Park"/>
+                            </Grid.Column>
+                            <Grid.Column mobile={12} width={6}>
+                                <Input value={this.state.url}
+                                       onChange={this.onUrlChange}
+                                       action={{ loading: this.state.loading, disabled: this.validate(), color: 'blue', labelPosition: 'right', icon: 'plus', content: 'Add', onClick: this.handleAddAddressClick }}
+                                       placeholder="http or https://...."/>
+                            </Grid.Column>
+                        </Grid.Row>
                     </Card.Content>
                 </Card>
             </div>

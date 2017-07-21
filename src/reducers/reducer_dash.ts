@@ -1,15 +1,19 @@
-import { ADD_ADDRESS, EDIT_ADDRESS, DELETE_ADDRESS, FETCH_ADDRESS, FETCH_ADDRESSES } from '../actions/index';
-import { addAddress, editAddress, deleteAddress, fetchAddress, fetchAddresses, IAction } from '../actions';
+import { ADD_ADDRESS, EDIT_ADDRESS, DELETE_ADDRESS, FETCH_ADDRESSES } from '../actions/index';
+import { addAddress, editAddress, deleteAddress, fetchAddresses, IAction, IAddress } from '../actions';
 
 const INITIAL_STATE = {
     addresses: []
 };
 
-export default function(state = INITIAL_STATE, action: IAction) {
+export interface IDashReducerState {
+    addresses: IAddress[];
+}
+
+export default function(state = INITIAL_STATE as IDashReducerState, action: IAction) {
     switch (action.type) {
 
         case ADD_ADDRESS: {
-            const addresses = [...state.addresses, action.payload];
+            const addresses = [...state.addresses, action.payload.data.data];
             return {...state, addresses};
         }
 
@@ -24,13 +28,8 @@ export default function(state = INITIAL_STATE, action: IAction) {
             return {...state, addresses};
         }
 
-        case FETCH_ADDRESS: {
-            const { data } = action.payload;
-            return {...state };
-        }
-
         case FETCH_ADDRESSES: {
-            const addresses = action.payload;
+            const addresses = action.payload.data ? action.payload.data.data : [];
             return {...state, addresses };
         }
 

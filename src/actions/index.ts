@@ -8,31 +8,37 @@ export interface IAction {
 }
 
 export interface IAddress {
-    id: number;
-    name: string;
-    url: string;
+    id?: string;
+    type?: 'listing';
+    attributes: {
+        title: string;
+        url: string;
+    };
 }
 
 export const ADD_ADDRESS = 'ADD_ADDRESS';
 export const EDIT_ADDRESS = 'EDIT_ADDRESS';
 export const DELETE_ADDRESS = 'DELETE_ADDRESS';
-export const FETCH_ADDRESS = 'FETCH_ADDRESS';
-export const FETCH_ADDRESSES = 'FETCH_ADDRESS';
+export const FETCH_ADDRESSES = 'FETCH_ADDRESSES';
 
 const baseURL = 'http://clientside-api.herokuapp.com/api/v1';
-const apiKey = 'A04122d47f53fa28edd441ac101b8c8d';
+const apiKey = 'a04122d47f53fa28edd441ac101b8c8d';
 const timeout = 3000;
 const headers = { 'Authorization': apiKey };
 const axiosInstance = axios.create({ baseURL, timeout, headers });
 
 export function addAddress(address: IAddress): IAction {
+    const requestData = { data: address };
+    const request = axiosInstance.post(`/listings`, requestData);
+
     return {
         type: ADD_ADDRESS,
-        payload: address
+        payload: request
     };
 }
 
 export function editAddress(address: IAddress): IAction {
+    const requestData = { data: address };
     const request = axiosInstance.put(`/listings/${address.id}`, address);
 
     return {
@@ -46,15 +52,6 @@ export function deleteAddress(id: number): IAction {
 
     return {
         type: DELETE_ADDRESS,
-        payload: request
-    };
-}
-
-export function fetchAddress(id: number): IAction {
-    const request = axiosInstance.get(`/listings/${id}`);
-
-    return {
-        type: FETCH_ADDRESS,
         payload: request
     };
 }

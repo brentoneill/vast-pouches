@@ -7,50 +7,111 @@ import { bindActionCreators } from 'redux';
 import { toastr } from 'react-redux-toastr';
 
 import AddressInput from './AddressInput';
+import AddressCard from './AddressCard';
 
-import { addAddress, fetchAddresses } from '../actions';
+import { addAddress, deleteAddress, editAddress, fetchAddresses, IAddress } from '../actions';
+import { IDashReducerState } from '../reducers/reducer_dash';
+
+import { handleError } from '../util';
+
+import './styles/Dashboard.scss';
 
 interface IDashboardProps {
     // redux actions
     addAddress: Function;
+    deleteAddress: Function;
+    editAddress: Function;
     fetchAddresses: Function;
     // data
     addresses: any[];
 }
 
-interface IDashboardState {
-    addresses?: any;
+interface IDashboardState extends IDashReducerState  {
+    loading?: boolean;
 }
 
-import './styles/Dashboard.scss';
-
 class Dashboard extends React.Component<IDashboardProps, IDashboardState> {
-
-    public socket;
-
     constructor(props: IDashboardProps) {
         super(props);
-        this.state = {
-            addresses: props.addresses
-        };
     }
 
     componentWillMount() {
+        this.toggleLoad(true);
+        this.props.fetchAddresses()
+            .then(action => {
+                console.log(action);
+                if (action.payload.response && action.payload.response.data.errors) {
+                    const { errors } = action.payload.response.data;
+                    handleError('Fetching listings failed', errors);
+                }
 
+                this.toggleLoad(false);
+            });
     }
 
-    componentWillReceiveProps(nextProps: IDashboardProps) {
+    toggleLoad(loading: boolean) {
+        this.setState({ loading });
+    }
+
+    @autobind
+    onAddAddress(address: IAddress) {
+        this.toggleLoad(true);
+        return this.props.addAddress(address)
+            .then(action => {
+                if (action.payload.response && action.payload.response.errors) {
+                    const { errors } = action.payload.response;
+                    handleError('Add addresses failed', errors);
+                } else {
+                    toastr.success('Property added!', `Successfully added ${address.attributes.title}`);
+                }
+                this.toggleLoad(false);
+            });
+    }
+
+    @autobind
+    deleteAddress(addressId: number) {
+        this.toggleLoad(true);
+        return this.props.deleteAddress(addressId)
+            .then(action => {
+                console.log(action);
+                if (action.payload.response && action.payload.response.errors) {
+                    const { errors } = action.payload.response;
+                    handleError('Delete addresses failed', errors);
+                } else {
+                    toastr.success('Property deleted', `Successfully deleted that address`);
+                }
+                this.toggleLoad(false);
+            });
+    }
+
+    @autobind
+    onEditAddressClick() {
 
     }
 
     @autobind
-    onAddAddress(address: string) {
-        console.log(address);
-        // Make api request
+    onDeleteAddressClick() {
+
     }
 
-    render() {
-        const { addresses } = this.state;
+    renderAddress(addresses: IAddress[]): JSX.Element[] | null {
+        if (addresses && addresses.length) {
+            return addresses.map(address => {
+                return (
+                    <Grid.Column width={8} key={address.id}>
+                        <AddressCard address={address}
+                                     onEditClick={this.onEditAddressClick}
+                                     onDeleteClick={this.onDeleteAddressClick}/>
+                    </Grid.Column>
+                );
+            });
+        } else {
+            return null;
+        }
+    }
+
+    render(): JSX.Element {
+        const { addresses } = this.props;
 
         return (
             <div className="Dashboard">
@@ -61,11 +122,7 @@ class Dashboard extends React.Component<IDashboardProps, IDashboardState> {
                         </Grid.Column>
                     </Grid.Row>
                     <Grid.Row columns={16}>
-                        <Grid.Column width={8}>
-                        </Grid.Column>
-                        <Grid.Column width={8}>
-
-                        </Grid.Column>
+                        {this.renderAddress(addresses)}
                     </Grid.Row>
                 </Grid>
             </div>
@@ -75,13 +132,15 @@ class Dashboard extends React.Component<IDashboardProps, IDashboardState> {
 
 const mapStateToProps = (state) => {
     return {
-        addresses: state.dash.addresses,
+        addresses: state.dash.addresses
     };
 };
 
 const mapDispatchToProps = (dispatch) => {
     return {
         addAddress: bindActionCreators(addAddress, dispatch),
+        editAddress: bindActionCreators(editAddress, dispatch),
+        deleteAddress: bindActionCreators(deleteAddress, dispatch),
         fetchAddresses: bindActionCreators(fetchAddresses, dispatch)
     };
 };
