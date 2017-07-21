@@ -28,6 +28,7 @@ interface IDashboardProps {
 
 interface IDashboardState extends IDashReducerState  {
     loading?: boolean;
+    editModalOpen?: boolean;
 }
 
 class Dashboard extends React.Component<IDashboardProps, IDashboardState> {
@@ -36,16 +37,12 @@ class Dashboard extends React.Component<IDashboardProps, IDashboardState> {
     }
 
     componentWillMount() {
-        this.toggleLoad(true);
         this.props.fetchAddresses()
             .then(action => {
-                console.log(action);
                 if (action.payload.response && action.payload.response.data.errors) {
                     const { errors } = action.payload.response.data;
                     handleError('Fetching listings failed', errors);
                 }
-
-                this.toggleLoad(false);
             });
     }
 
@@ -54,47 +51,40 @@ class Dashboard extends React.Component<IDashboardProps, IDashboardState> {
     }
 
     @autobind
-    onAddAddress(address: IAddress) {
-        this.toggleLoad(true);
+    onAddAddress(address: IAddress): Promise<any> {
         return this.props.addAddress(address)
             .then(action => {
                 if (action.payload.response && action.payload.response.errors) {
                     const { errors } = action.payload.response;
-                    handleError('Add addresses failed', errors);
+                    handleError('Add addresse failed', errors);
                 } else {
                     toastr.success('Property added!', `Successfully added ${address.attributes.title}`);
                 }
-                this.toggleLoad(false);
             });
     }
 
     @autobind
-    deleteAddress(addressId: number) {
-        this.toggleLoad(true);
+    deleteAddress(addressId: string): Promise<any> {
         return this.props.deleteAddress(addressId)
             .then(action => {
-                console.log(action);
                 if (action.payload.response && action.payload.response.errors) {
                     const { errors } = action.payload.response;
-                    handleError('Delete addresses failed', errors);
+                    handleError('Delete addresse failed', errors);
                 } else {
+                    this.props.fetchAddresses();
                     toastr.success('Property deleted', `Successfully deleted that address`);
                 }
-                this.toggleLoad(false);
             });
     }
 
     @autobind
     onEditAddressClick(address: IAddress) {
-        console.log(address);
+        this.setState({ editModalOpen: true });
     }
 
     @autobind
     onDeleteAddressClick(address: IAddress) {
-        this.props.deleteAddress(address.id)
-            .then(action => {
-                this.props.fetchAddresses();
-            });
+        this.deleteAddress(address.id);
     }
 
     renderAddress(addresses: IAddress[]): JSX.Element[] | null {
