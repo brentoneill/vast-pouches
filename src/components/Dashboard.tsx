@@ -86,7 +86,7 @@ class Dashboard extends React.Component<IDashboardProps, IDashboardState> {
 
     @autobind
     onEditAddressClick(address: IAddress) {
-        this.setState({ editModalOpen: true, editAddress: address });
+        this.setState({ editModalOpen: true, editAddress: Object.assign({}, address) });
     }
 
     @autobind
@@ -112,14 +112,15 @@ class Dashboard extends React.Component<IDashboardProps, IDashboardState> {
 
     @autobind
     renderEditModal(): JSX.Element {
+        const { editModalOpen, editAddress } = this.state;
         return (
-            <Modal open={this.state.editModalOpen}
+            <Modal open={editModalOpen}
                dimmer={'blurring'}
                basic
                size="small"
                closeOnDimmerClick={true}>
                <Modal.Content>
-
+                    <h3>Edit "{editAddress && editAddress.attributes.title}"</h3>
                </Modal.Content>
                <Modal.Actions>
                    <Button basic
@@ -135,7 +136,6 @@ class Dashboard extends React.Component<IDashboardProps, IDashboardState> {
                    </Button>
                </Modal.Actions>
             </Modal>
-
         );
     }
 

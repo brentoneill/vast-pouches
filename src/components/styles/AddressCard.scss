@@ -14,6 +14,11 @@
         h3 {
             margin-bottom: 4px;
         }
+
+        a {
+            word-break: break-all;
+            word-wrap: break-word;
+        }
     }
 
     &.ui.card {
