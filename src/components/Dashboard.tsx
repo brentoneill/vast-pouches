@@ -57,7 +57,7 @@ class Dashboard extends React.Component<IDashboardProps, IDashboardState> {
                     const { errors } = action.payload.response;
                     handleError('Add addresse failed', errors);
                 } else {
-                    toastr.success('Property added!', `Successfully added ${address.attributes.title}`);
+                    toastr.success('Address added!', `Successfully added ${address.attributes.title}`);
                 }
             });
     }
@@ -68,17 +68,26 @@ class Dashboard extends React.Component<IDashboardProps, IDashboardState> {
             .then(action => {
                 if (action.payload.response && action.payload.response.errors) {
                     const { errors } = action.payload.response;
-                    handleError('Delete addresse failed', errors);
+                    handleError('Delete address failed', errors);
                 } else {
                     this.props.fetchAddresses();
-                    toastr.success('Property deleted', `Successfully deleted that address`);
+                    toastr.success('Address deleted', `Successfully deleted that address`);
                 }
             });
     }
 
     @autobind
     editAddress() {
-
+        return this.props.editAddress(this.state.editAddress)
+            .then(action => {
+                if (action.payload.response && action.payload.response.errors) {
+                    const { errors } = action.payload.response;
+                    handleError('Update address failed', errors);
+                } else {
+                    this.setState({ editAddress: null, editModalOpen: false });
+                    toastr.success('Address updated', `Successfully updated that address`);
+                }
+            });
     }
 
     @autobind
@@ -142,13 +151,14 @@ class Dashboard extends React.Component<IDashboardProps, IDashboardState> {
                         <div className="EditModal__inputs">
                             <div className="EditModal__input-wrapper">
                                 <Input fluid
+                                       label="Name"
                                        value={editAddress.attributes.title}
                                        onChange={this.onEditAddressTitleChange}
                                        placeholder="Name"/>
                             </div>
                             <div className="EditModal__input-wrapper">
                                 <Input fluid
-                                       label="http://"
+                                       label="URL"
                                        value={editAddress.attributes.url}
                                        onChange={this.onEditAddressUrlChange}
                                        placeholder="URL"/>
@@ -164,7 +174,7 @@ class Dashboard extends React.Component<IDashboardProps, IDashboardState> {
                        </Button>
                        <Button primary
                                inverted
-                               disabled={validateUrl(editAddress.attributes.url)}
+                               disabled={!validateUrl(editAddress.attributes.url)}
                                onClick={this.editAddress}>
                            <Icon name="pencil" /> Save Address
                        </Button>

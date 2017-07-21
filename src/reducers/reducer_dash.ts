@@ -18,8 +18,9 @@ export default function(state = INITIAL_STATE as IDashReducerState, action: IAct
         }
 
         case EDIT_ADDRESS: {
-            let addresses = state.addresses.filter(address => address.id !== action.payload.id);
-            addresses.push(action.payload);
+            console.log(action.payload.data);
+            let addresses = state.addresses.filter(address => address.id !== action.payload.data.data.id);
+            addresses.push(action.payload.data.data);
             return {...state, addresses};
         }
 

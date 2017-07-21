@@ -38,8 +38,9 @@ export function addAddress(address: IAddress): IAction {
 }
 
 export function editAddress(address: IAddress): IAction {
+    const { id } = address;
     const requestData = { data: address };
-    const request = axiosInstance.put(`/listings/${address.id}`, address);
+    const request = axiosInstance.put(`/listings/${id}`, requestData);
 
     return {
         type: EDIT_ADDRESS,
