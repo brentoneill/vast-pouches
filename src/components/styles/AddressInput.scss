@@ -1,0 +1,11 @@
+.AddressInput {
+    .AddressInput__controls {
+        display: flex;
+        .ui.input {
+            width: 50%;
+            &:first-child {
+                margin-right: 1em;
+            }
+        }
+    }
+}

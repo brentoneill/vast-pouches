@@ -4,6 +4,8 @@ import { Card, Header, Input, Grid } from 'semantic-ui-react';
 
 import { addAddress } from '../actions';
 
+import './styles/AddressInput.scss';
+
 interface IProps {
     onAddAddress: Function;
 }
@@ -60,19 +62,16 @@ export default class AddressInput extends React.Component<IProps, IState> {
                 <Card fluid>
                     <Card.Content>
                         <Header as={'h2'} color={'blue'}>Add Property</Header>
-                        <Grid.Row columns={12}>
-                            <Grid.Column mobile={12} width={6}>
-                                <Input value={this.state.title}
-                                       onChange={this.onNameChange}
-                                       placeholder="123 Park"/>
-                            </Grid.Column>
-                            <Grid.Column mobile={12} width={6}>
-                                <Input value={this.state.url}
-                                       onChange={this.onUrlChange}
-                                       action={{ loading: this.state.loading, disabled: this.validate(), color: 'blue', labelPosition: 'right', icon: 'plus', content: 'Add', onClick: this.handleAddAddressClick }}
-                                       placeholder="http or https://...."/>
-                            </Grid.Column>
-                        </Grid.Row>
+                        <div className="AddressInput__controls">
+                            <Input value={this.state.title}
+                                   onChange={this.onNameChange}
+                                   placeholder="Name"/>
+                            <Input label="http://"
+                                   value={this.state.url}
+                                   onChange={this.onUrlChange}
+                                   action={{ loading: this.state.loading, disabled: this.validate(), color: 'blue', labelPosition: 'right', icon: 'plus', content: 'Add', onClick: this.handleAddAddressClick }}
+                                   placeholder="URL"/>
+                        </div>
                     </Card.Content>
                 </Card>
             </div>
