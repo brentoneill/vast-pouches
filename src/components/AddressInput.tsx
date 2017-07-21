@@ -1,8 +1,9 @@
 import * as React from 'react';
 import autobind from 'autobind-decorator';
-import { Card, Header, Input, Grid } from 'semantic-ui-react';
+import { Card, Header, Input, Grid, Label } from 'semantic-ui-react';
 
 import { addAddress } from '../actions';
+import { validateUrl } from '../util';
 
 import './styles/AddressInput.scss';
 
@@ -14,6 +15,7 @@ interface IState {
     url?: string;
     loading?: boolean;
     title?: string;
+    showUrlValidation?: boolean;
 }
 
 export default class AddressInput extends React.Component<IProps, IState> {
@@ -31,7 +33,9 @@ export default class AddressInput extends React.Component<IProps, IState> {
     handleAddAddressClick(event: React.MouseEvent<HTMLButtonElement>, data): void {
         let { url, title } = this.state;
         url = url.indexOf('http') >= 0 ? url : `http://${url}`;
+
         this.setState({ loading: true });
+
         this.props.onAddAddress({ attributes: { title: title, url }})
             .then(() => {
                 this.setState({ url: '', title: '', loading: false });
@@ -40,7 +44,12 @@ export default class AddressInput extends React.Component<IProps, IState> {
 
     @autobind
     onUrlChange(event: React.ChangeEvent<HTMLInputElement>, data): void {
-        this.setState({ url: data.value });
+        const url = data.value;
+        if (url.length > 5 && !validateUrl(url)) {
+            this.setState({ showUrlValidation: true, url });
+        } else {
+            this.setState({ url, showUrlValidation: false });
+        }
     }
 
     @autobind
@@ -50,28 +59,45 @@ export default class AddressInput extends React.Component<IProps, IState> {
 
     validate(): boolean {
         const { title, url } = this.state;
-        if (title.length > 1 && url.length > 1) {
+        if (title.length > 1 && url.length > 1 && validateUrl(url)) {
             return false;
         } else {
             return true;
         }
     }
 
+    renderUrlValidationError(showUrlValidation: boolean): JSX.Element | null {
+        if (showUrlValidation) {
+            return <Label basic color="red" pointing>Please enter a valid url to add an address.</Label>;
+        } else {
+            return null;
+        }
+    }
+
     render(): JSX.Element | null {
+        const { showUrlValidation } = this.state;
+
         return (
             <div className="AddressInput">
                 <Card fluid>
                     <Card.Content>
                         <Header as={'h2'} color={'blue'}>Add Property</Header>
                         <div className="AddressInput__controls">
-                            <Input value={this.state.title}
-                                   onChange={this.onNameChange}
-                                   placeholder="Name"/>
-                            <Input label="http://"
-                                   value={this.state.url}
-                                   onChange={this.onUrlChange}
-                                   action={{ loading: this.state.loading, disabled: this.validate(), color: 'blue', labelPosition: 'right', icon: 'plus', content: 'Add Address', onClick: this.handleAddAddressClick }}
-                                   placeholder="URL"/>
+                            <div className="AddressInput__input-wrapper">
+                                <Input fluid
+                                       value={this.state.title}
+                                       onChange={this.onNameChange}
+                                       placeholder="Name"/>
+                            </div>
+                            <div className="AddressInput__input-wrapper">
+                                <Input fluid
+                                       label="http://"
+                                       value={this.state.url}
+                                       onChange={this.onUrlChange}
+                                       action={{ loading: this.state.loading, disabled: this.validate(), color: 'blue', labelPosition: 'right', icon: 'plus', content: 'Add Address', onClick: this.handleAddAddressClick }}
+                                       placeholder="URL"/>
+                                {this.renderUrlValidationError(showUrlValidation)}
+                            </div>
                         </div>
                     </Card.Content>
                 </Card>

@@ -1,7 +1,7 @@
 .AddressInput {
     .AddressInput__controls {
         display: flex;
-        .ui.input {
+        .AddressInput__input-wrapper {
             width: 50%;
             &:first-child {
                 margin-right: 1em;
