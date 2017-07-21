@@ -6,14 +6,6 @@ const app = express();
 // process.env.PORT lets the port be set by Heroku
 const port = process.env.PORT || 8080;
 
-app.all('*', function(req, res, next) {
-     const origin = req.get('origin');
-     res.header('Access-Control-Allow-Origin', origin);
-     res.header("Access-Control-Allow-Headers", "X-Requested-With");
-     res.header('Access-Control-Allow-Headers', 'Content-Type');
-     next();
-});
-
 // set the view engine to ejs
 app.set('view engine', 'ejs');
 

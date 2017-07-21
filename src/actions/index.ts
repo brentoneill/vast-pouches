@@ -21,7 +21,7 @@ export const EDIT_ADDRESS = 'EDIT_ADDRESS';
 export const DELETE_ADDRESS = 'DELETE_ADDRESS';
 export const FETCH_ADDRESSES = 'FETCH_ADDRESSES';
 
-const baseURL = 'http://clientside-api.herokuapp.com/api/v1';
+const baseURL = 'https://clientside-api.herokuapp.com/api/v1';
 const apiKey = 'a04122d47f53fa28edd441ac101b8c8d';
 const timeout = 3000;
 const headers = { 'Authorization': apiKey };
