@@ -17,7 +17,7 @@ export default class AddressCard extends React.Component<IProps, {}> {
 
     @autobind
     onDeleteClick(event: React.MouseEvent<HTMLElement>) {
-        this.props.onDeleteClick(this.props.address);
+        this.props.onEditClick(this.props.address);
     }
 
     @autobind

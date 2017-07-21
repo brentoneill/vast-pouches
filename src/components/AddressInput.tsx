@@ -31,7 +31,7 @@ export default class AddressInput extends React.Component<IProps, IState> {
     handleAddAddressClick(event: React.MouseEvent<HTMLButtonElement>, data): void {
         const { url, title } = this.state;
         this.setState({ loading: true });
-        this.props.onAddAddress({ attributes: { title: title, url }})
+        this.props.onAddAddress({ attributes: { title: title, url: `http://${url}` }})
             .then(() => {
                 this.setState({ url: '', title: '', loading: false });
             });
