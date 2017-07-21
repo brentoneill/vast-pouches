@@ -3,6 +3,7 @@ import autobind from 'autobind-decorator';
 import { Card, Button } from 'semantic-ui-react';
 
 import { IAddress } from '../actions';
+import { stringToColour } from '../util';
 
 import './styles/AddressCard';
 
@@ -30,8 +31,11 @@ export default class AddressCard extends React.Component<IProps, {}> {
         return (
             <Card fluid className="AddressCard">
                 <Card.Content>
-                    <h3>{address.attributes.title}</h3>
-                    <a target="_blank" href={address.attributes.url}>{address.attributes.url}</a>
+                    <div className="circle" style={{ backgroundColor: stringToColour(address.attributes.url) }}></div>
+                    <div className="AddressCard__content">
+                        <h3>{address.attributes.title}</h3>
+                        <a target="_blank" href={address.attributes.url}>{address.attributes.url}</a>
+                    </div>
                     <div className="AddressCard__controls">
                         <Button.Group>
                             <Button primary onClick={this.onEditClick}>Edit</Button>
