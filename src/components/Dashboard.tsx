@@ -5,6 +5,7 @@ import autobind from 'autobind-decorator';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import { toastr } from 'react-redux-toastr';
+const objectAssignDeep = require(`object-assign-deep`);
 
 import AddressInput from './AddressInput';
 import AddressCard from './AddressCard';
@@ -12,7 +13,7 @@ import AddressCard from './AddressCard';
 import { addAddress, deleteAddress, editAddress, fetchAddresses, IAddress } from '../actions';
 import { IDashReducerState } from '../reducers/reducer_dash';
 
-import { handleError } from '../util';
+import { handleError, validateUrl } from '../util';
 
 import './styles/Dashboard.scss';
 
@@ -27,9 +28,9 @@ interface IDashboardProps {
 }
 
 interface IDashboardState extends IDashReducerState  {
-    loading?: boolean;
     editModalOpen?: boolean;
-    editAddress: IAddress;
+    editAddress?: IAddress;
+    editTitle?: string;
 }
 
 class Dashboard extends React.Component<IDashboardProps, IDashboardState> {
@@ -46,10 +47,6 @@ class Dashboard extends React.Component<IDashboardProps, IDashboardState> {
                     handleError('Fetching listings failed', errors);
                 }
             });
-    }
-
-    toggleLoad(loading: boolean) {
-        this.setState({ loading });
     }
 
     @autobind
@@ -86,7 +83,11 @@ class Dashboard extends React.Component<IDashboardProps, IDashboardState> {
 
     @autobind
     onEditAddressClick(address: IAddress) {
-        this.setState({ editModalOpen: true, editAddress: Object.assign({}, address) });
+        this.setState({
+            editModalOpen: true,
+            editAddress: objectAssignDeep({}, address),
+            editTitle: address.attributes.title.substring(0, address.attributes.title.length)
+        });
     }
 
     @autobind
@@ -111,32 +112,68 @@ class Dashboard extends React.Component<IDashboardProps, IDashboardState> {
     }
 
     @autobind
+    onEditAddressTitleChange(event: React.ChangeEvent<HTMLInputElement>, data) {
+        let { editAddress } = this.state;
+        editAddress.attributes.title = data.value;
+        this.setState({ editAddress });
+    }
+
+    @autobind
+    onEditAddressUrlChange(event: React.ChangeEvent<HTMLInputElement>, data) {
+        let { editAddress } = this.state;
+        editAddress.attributes.url = data.value;
+        this.setState({ editAddress });
+    }
+
+    @autobind
     renderEditModal(): JSX.Element {
-        const { editModalOpen, editAddress } = this.state;
-        return (
-            <Modal open={editModalOpen}
-               dimmer={'blurring'}
-               basic
-               size="small"
-               closeOnDimmerClick={true}>
-               <Modal.Content>
-                    <h3>Edit "{editAddress && editAddress.attributes.title}"</h3>
-               </Modal.Content>
-               <Modal.Actions>
-                   <Button basic
-                           negative
-                           inverted
-                           onClick={() => { this.setState({ editModalOpen: false}); }}>
-                       Cancel
-                   </Button>
-                   <Button primary
-                           inverted
-                           onClick={this.editAddress}>
-                       <Icon name="pencil" /> Save Address
-                   </Button>
-               </Modal.Actions>
-            </Modal>
-        );
+        const { editModalOpen, editAddress, editTitle } = this.state;
+
+        if (editAddress) {
+            return (
+                <Modal open={editModalOpen}
+                   dimmer={'blurring'}
+                   basic
+                   size="small"
+                   className="EditModal"
+                   closeOnDimmerClick={true}>
+                   <Modal.Content>
+                        <h3>Edit "{editTitle}"</h3>
+                        <div className="EditModal__inputs">
+                            <div className="EditModal__input-wrapper">
+                                <Input fluid
+                                       value={editAddress.attributes.title}
+                                       onChange={this.onEditAddressTitleChange}
+                                       placeholder="Name"/>
+                            </div>
+                            <div className="EditModal__input-wrapper">
+                                <Input fluid
+                                       label="http://"
+                                       value={editAddress.attributes.url}
+                                       onChange={this.onEditAddressUrlChange}
+                                       placeholder="URL"/>
+                            </div>
+                        </div>
+                   </Modal.Content>
+                   <Modal.Actions>
+                       <Button basic
+                               negative
+                               inverted
+                               onClick={() => { this.setState({ editModalOpen: false}); }}>
+                           Cancel
+                       </Button>
+                       <Button primary
+                               inverted
+                               disabled={validateUrl(editAddress.attributes.url)}
+                               onClick={this.editAddress}>
+                           <Icon name="pencil" /> Save Address
+                       </Button>
+                   </Modal.Actions>
+                </Modal>
+            );
+        } else {
+            return null;
+        }
     }
 
     render(): JSX.Element {

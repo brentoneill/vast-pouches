@@ -46,7 +46,7 @@ export default class AddressInput extends React.Component<IProps, IState> {
     onUrlChange(event: React.ChangeEvent<HTMLInputElement>, data): void {
         const url = data.value;
         if (url.length > 5 && !validateUrl(url)) {
-            this.setState({ showUrlValidation: true, url });
+            this.setState({ url, showUrlValidation: true });
         } else {
             this.setState({ url, showUrlValidation: false });
         }

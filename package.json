@@ -48,6 +48,7 @@
         "json-loader": "^0.5.4",
         "node-sass": "^4.5.3",
         "nodemon": "^1.11.0",
+        "object-assign-deep": "^0.3.1",
         "pusher-js": "^4.1.0",
         "react": "^15.6.1",
         "react-addons-css-transition-group": "^15.6.0",
@@ -62,8 +63,8 @@
         "semantic-ui-react": "^0.70.0",
         "sinon": "^2.3.6",
         "style-loader": "^0.18.2",
-        "typescript": "^2.4.1",
         "ts-loader": "^2.2.1",
+        "typescript": "^2.4.1",
         "url-loader": "^0.5.9",
         "webpack": "^1.12.9"
     }
