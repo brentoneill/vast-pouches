@@ -70,7 +70,7 @@ export default class AddressInput extends React.Component<IProps, IState> {
                             <Input label="http://"
                                    value={this.state.url}
                                    onChange={this.onUrlChange}
-                                   action={{ loading: this.state.loading, disabled: this.validate(), color: 'blue', labelPosition: 'right', icon: 'plus', content: 'Add', onClick: this.handleAddAddressClick }}
+                                   action={{ loading: this.state.loading, disabled: this.validate(), color: 'blue', labelPosition: 'right', icon: 'plus', content: 'Add Address', onClick: this.handleAddAddressClick }}
                                    placeholder="URL"/>
                         </div>
                     </Card.Content>

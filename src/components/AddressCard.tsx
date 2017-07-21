@@ -13,11 +13,24 @@ interface IProps {
     onEditClick: Function;
 }
 
-export default class AddressCard extends React.Component<IProps, {}> {
+interface IState {
+    loading?: boolean;
+}
+
+export default class AddressCard extends React.Component<IProps, IState> {
+
+    constructor(props: IProps) {
+        super(props);
+        this.state = {
+            loading: false
+        };
+    }
 
     @autobind
     onDeleteClick(event: React.MouseEvent<HTMLElement>) {
-        this.props.onDeleteClick(this.props.address);
+        this.setState({ loading: true });
+        this.props.onDeleteClick(this.props.address)
+            .then(() => { this.setState({ loading: false }); });
     }
 
     @autobind
@@ -27,6 +40,7 @@ export default class AddressCard extends React.Component<IProps, {}> {
 
     render(): JSX.Element {
         const { address } = this.props;
+        const { loading } = this.state;
 
         return (
             <Card fluid className="AddressCard">
@@ -40,7 +54,7 @@ export default class AddressCard extends React.Component<IProps, {}> {
                         <Button.Group>
                             <Button primary onClick={this.onEditClick}>Edit</Button>
                                 <Button.Or />
-                            <Button negative onClick={this.onDeleteClick}>Delete</Button>
+                            <Button negative loading={loading} onClick={this.onDeleteClick}>Delete</Button>
                         </Button.Group>
                     </div>
                 </Card.Content>

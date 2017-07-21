@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { Grid, Card } from 'semantic-ui-react';
+import { Grid, Card, Modal, Button, Input, Icon } from 'semantic-ui-react';
 import axios from 'axios';
 import autobind from 'autobind-decorator';
 import { connect } from 'react-redux';
@@ -29,6 +29,7 @@ interface IDashboardProps {
 interface IDashboardState extends IDashReducerState  {
     loading?: boolean;
     editModalOpen?: boolean;
+    editAddress: IAddress;
 }
 
 class Dashboard extends React.Component<IDashboardProps, IDashboardState> {
@@ -37,6 +38,7 @@ class Dashboard extends React.Component<IDashboardProps, IDashboardState> {
     }
 
     componentWillMount() {
+        this.setState({ editAddress: null, editModalOpen: false });
         this.props.fetchAddresses()
             .then(action => {
                 if (action.payload.response && action.payload.response.data.errors) {
@@ -78,13 +80,18 @@ class Dashboard extends React.Component<IDashboardProps, IDashboardState> {
     }
 
     @autobind
+    editAddress() {
+
+    }
+
+    @autobind
     onEditAddressClick(address: IAddress) {
-        this.setState({ editModalOpen: true });
+        this.setState({ editModalOpen: true, editAddress: address });
     }
 
     @autobind
     onDeleteAddressClick(address: IAddress) {
-        this.deleteAddress(address.id);
+        return this.deleteAddress(address.id);
     }
 
     renderAddress(addresses: IAddress[]): JSX.Element[] | null {
@@ -103,6 +110,35 @@ class Dashboard extends React.Component<IDashboardProps, IDashboardState> {
         }
     }
 
+    @autobind
+    renderEditModal(): JSX.Element {
+        return (
+            <Modal open={this.state.editModalOpen}
+               dimmer={'blurring'}
+               basic
+               size="small"
+               closeOnDimmerClick={true}>
+               <Modal.Content>
+
+               </Modal.Content>
+               <Modal.Actions>
+                   <Button basic
+                           negative
+                           inverted
+                           onClick={() => { this.setState({ editModalOpen: false}); }}>
+                       Cancel
+                   </Button>
+                   <Button primary
+                           inverted
+                           onClick={this.editAddress}>
+                       <Icon name="pencil" /> Save Address
+                   </Button>
+               </Modal.Actions>
+            </Modal>
+
+        );
+    }
+
     render(): JSX.Element {
         const { addresses } = this.props;
 
@@ -118,6 +154,7 @@ class Dashboard extends React.Component<IDashboardProps, IDashboardState> {
                         {this.renderAddress(addresses)}
                     </Grid.Row>
                 </Grid>
+                {this.renderEditModal()}
             </div>
         );
     }
