@@ -29,9 +29,10 @@ export default class AddressInput extends React.Component<IProps, IState> {
 
     @autobind
     handleAddAddressClick(event: React.MouseEvent<HTMLButtonElement>, data): void {
-        const { url, title } = this.state;
+        let { url, title } = this.state;
+        url = url.indexOf('http') >= 0 ? url : `http://${url}`;
         this.setState({ loading: true });
-        this.props.onAddAddress({ attributes: { title: title, url: `http://${url}` }})
+        this.props.onAddAddress({ attributes: { title: title, url }})
             .then(() => {
                 this.setState({ url: '', title: '', loading: false });
             });
